@@ -14,8 +14,8 @@ const findRoutes = async (dir)=>{
     return routes;
 }
 
-const buildBundle = async (html)=>{
-    const file = await fs.readFile(`${html}/index.html`, "utf8");
+const buildBundle = async (route)=>{
+    const file = await fs.readFile(`${route}/index.html`, "utf8");
     let newFile = "";
 
     for(let i = 0; i < file.length; i++){
@@ -24,12 +24,13 @@ const buildBundle = async (html)=>{
             while(file[i+j] !== ">"){
                 j++;
             }
-            let tag = file.substring(file[i], file[i+j]);
+
+            let tag = file.substring(i, i+j);
             tag = tag.replaceAll("<", "");
             tag = tag.replaceAll(">", "");
             tag = tag.replaceAll("/", "");
             tag = tag.replaceAll("-", "");
-            newFile += await fs.readFile(`${html}/${tag}.html`);
+            newFile += await fs.readFile(`${route}/${tag}.html`);
             
             i += j;
         }else{
@@ -37,11 +38,8 @@ const buildBundle = async (html)=>{
         }
     }
 
-    //Working here
-    //Need to create direction if it doesn't already exist
-    console.log(html.replace(`${__dirname}/routes`, ""));
-    let createdFile = `${__dirname}/build/${html.replace(`${__dirname}/routes`, "")}index.html`;
-    console.log(createdFile);
+    await fs.mkdir(`${route.replace("routes", "build")}`, {recursive: true});
+    let createdFile = `${route.replace("routes", "build")}/index.html`;
     await fs.writeFile(createdFile, newFile);
     return createdFile;
 }
@@ -56,9 +54,9 @@ const htmlbuild = async (options)=>{
         app.get(routes[i].replace(`${__dirname}/routes`, ""), (req, res)=>{res.sendFile(routeFile)});
     }
 
-    app.listen(8000);
+    app.listen(8080);
 }
 
 htmlbuild();
 
-module.exports = htmlbuild();
+module.exports = htmlbuild;
