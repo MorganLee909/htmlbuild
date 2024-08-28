@@ -30,10 +30,6 @@ const bundleJSCSS = async (dir, type)=>{
     return code;
 }
 
-const bundleCSS = async(dir)=>{
-    esbuildOptions.entryPoints = [``]
-}
-
 const bundle = async (filepath)=>{
     const file = await fs.readFile(filepath, "utf8");
     let newFile = "";
@@ -81,6 +77,8 @@ const htmlbuild = async (options)=>{
     const app = express();
     app.use(compression());
 
+    if(options.minify === true) esbuildOptions.minify = true;
+
     const routes = await findRoutes(`${__dirname}/routes`);
     for(let i = 0; i < routes.length; i++){
         const routeFile = await build(routes[i]);
@@ -91,7 +89,7 @@ const htmlbuild = async (options)=>{
 }
 
 console.time("htmlbuild");
-htmlbuild();
+htmlbuild({minify: true});
 console.timeEnd("htmlbuild");
 
 module.exports = htmlbuild;
