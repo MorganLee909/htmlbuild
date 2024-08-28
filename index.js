@@ -19,14 +19,19 @@ const findRoutes = async (dir)=>{
     return routes;
 }
 
-const bundleJS = async (dir)=>{
-    esbuildOptions.entryPoints = [`${dir}/index.js`];
-    esbuildOptions.outfile = `${dir}/temp.js`;
+const bundleJSCSS = async (dir, type)=>{
+    esbuildOptions.entryPoints = [`${dir}/index.${type}`];
+    esbuildOptions.outfile = `${dir}/temp.${type}`;
     await esbuild.build(esbuildOptions);
-    let js = await fs.readFile(`${dir}/temp.js`, "utf8");
-    js = `<script>${js}</script>`;
-    fs.unlink(`${dir}/temp.js`, (err)=>{if(err)console.error(err)});
-    return js;
+    let code = await fs.readFile(`${dir}/temp.${type}`, "utf8");
+    if(type === "js") code = `<script>${code}</script>`;
+    if(type === "css") code = `<style>${code}</style>`;
+    fs.unlink(`${dir}/temp.${type}`, (err)=>{if(err)console.error(err)});
+    return code;
+}
+
+const bundleCSS = async(dir)=>{
+    esbuildOptions.entryPoints = [``]
 }
 
 const bundle = async (filepath)=>{
@@ -47,8 +52,11 @@ const bundle = async (filepath)=>{
 
                 i += j;
             }else if(file.substring(i+1, i+3) === "js"){
-                newFile += await bundleJS(path.parse(filepath).dir);
+                newFile += await bundleJSCSS(path.parse(filepath).dir, "js");
                 i += 3;
+            }else if(file.substring(i+1, i+4) === "css"){
+                newFile += await bundleJSCSS(path.parse(filepath).dir, "css");
+                i += 4;
             }else{
                 newFile += file[i];
             }
