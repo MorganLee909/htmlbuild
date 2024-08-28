@@ -79,10 +79,10 @@ const htmlbuild = async (options)=>{
 
     if(options.minify === true) esbuildOptions.minify = true;
 
-    const routes = await findRoutes(`${__dirname}/routes`);
+    const routes = await findRoutes(`${process.cwd()}/routes`);
     for(let i = 0; i < routes.length; i++){
         const routeFile = await build(routes[i]);
-        app.get(routes[i].replace(`${__dirname}/routes`, ""), (req, res)=>{res.sendFile(routeFile)});
+        app.get(routes[i].replace(`${process.cwd()}/routes`, ""), (req, res)=>{res.sendFile(routeFile)});
     }
 
     app.listen(8000);
