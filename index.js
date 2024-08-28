@@ -77,7 +77,9 @@ const htmlbuild = async (options)=>{
     const app = express();
     app.use(compression());
 
-    if(options.minify === true) esbuildOptions.minify = true;
+    if(options){
+        if(options.minify === true) esbuildOptions.minify = true;
+    }
 
     const routes = await findRoutes(`${process.cwd()}/routes`);
     for(let i = 0; i < routes.length; i++){
@@ -85,6 +87,7 @@ const htmlbuild = async (options)=>{
         app.get(routes[i].replace(`${process.cwd()}/routes`, ""), (req, res)=>{res.sendFile(routeFile)});
     }
 
+    app.get("/assets/:file", (req, res)=>{res.sendFile(`${process.cwd()}/assets/${req.params.file}`)});
     app.listen(8000);
 }
 
