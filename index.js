@@ -88,8 +88,4 @@ const htmlbuild = async (options)=>{
     app.listen(8000);
 }
 
-console.time("htmlbuild");
-htmlbuild({minify: true});
-console.timeEnd("htmlbuild");
-
 module.exports = htmlbuild;
