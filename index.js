@@ -85,7 +85,7 @@ const htmlbuild = async (options)=>{
         app.get(routes[i].replace(`${__dirname}/routes`, ""), (req, res)=>{res.sendFile(routeFile)});
     }
 
-    app.listen(8080);
+    app.listen(8000);
 }
 
 console.time("htmlbuild");
