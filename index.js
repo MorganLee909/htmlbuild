@@ -83,6 +83,7 @@ const htmlbuild = async (options)=>{
 
     const routes = await findRoutes(`${process.cwd()}/routes`);
     for(let i = 0; i < routes.length; i++){
+        if(routes[i].includes(":")) routes.push(routes.splice(i, 1)[0]);
         const routeFile = await build(routes[i]);
         app.get(routes[i].replace(`${process.cwd()}/routes`, ""), (req, res)=>{res.sendFile(routeFile)});
     }
