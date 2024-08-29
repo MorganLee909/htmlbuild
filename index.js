@@ -93,5 +93,4 @@ const htmlbuild = async (options)=>{
     app.listen(8000);
 }
 
-htmlbuild();
 module.exports = htmlbuild;
