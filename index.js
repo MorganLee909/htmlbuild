@@ -20,13 +20,14 @@ const findRoutes = async (dir)=>{
 }
 
 const bundleJSCSS = async (dir, type)=>{
+    const tempFile = `${dir.replace("routes", "build")}/temp.${type}`;
     esbuildOptions.entryPoints = [`${dir}/index.${type}`];
-    esbuildOptions.outfile = `${dir}/temp.${type}`;
+    esbuildOptions.outfile = tempFile;
     await esbuild.build(esbuildOptions);
-    let code = await fs.readFile(`${dir}/temp.${type}`, "utf8");
+    let code = await fs.readFile(tempFile, "utf8");
     if(type === "js") code = `<script>${code}</script>`;
     if(type === "css") code = `<style>${code}</style>`;
-    fs.unlink(`${dir}/temp.${type}`, (err)=>{if(err)console.error(err)});
+    fs.unlink(tempFile, (err)=>{if(err)console.error(err)});
     return code;
 }
 
@@ -92,4 +93,5 @@ const htmlbuild = async (options)=>{
     app.listen(8000);
 }
 
+htmlbuild();
 module.exports = htmlbuild;
